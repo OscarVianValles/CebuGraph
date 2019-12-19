@@ -4,17 +4,16 @@
 
 class Graph {
 private:
-    std::list<Node*> _vertex;
-    std::list<Edge*> *_adj;
-    int _cap;
-    int _size;
+    std::list<Node*> _vertex; // list of vertices (landmarks)
+    std::list<Edge*> *_adj; // list of edges (path)
+    int _cap; // capacity for array of vertices to add edges on them
+    int _size; // current number of vertices
 
 public:
     Graph(int);
     ~Graph();
     void expand();
     void addVertex(std::string);
-    Node getNode(int);
     void addEdge(int, int, int);
     void display();
 };
@@ -49,26 +48,19 @@ void Graph::expand() {
 }
 
 void Graph::addVertex(std::string name) {
-    if (this->_size + 1 >= this->_cap)
+    // add vertices (destinations)
+    if (this->_size + 1 >= this->_cap) // expand if number of vertices reached capacity
         this->expand();
 
     Node *n = new Node(this->_size, name);
 
+    // push to the list of vertex
     this->_vertex.push_back(n);
     this->_size += 1;
 }
 
-Node Graph::getNode(int id) {
-    for (std::list<Node*>::iterator it = this->_vertex.begin(); it != this->_vertex .end(); it++) {
-        Node tmp = **it;
-        if (tmp.id == id)
-            return tmp;
-    }
-
-    throw 404;
-}
-
 void Graph::addEdge(int a, int b, int cost) {
+    // edge has the destination id and the cost
     Edge *e = new Edge(b, cost);
 
     this->_adj[a].push_back(e);
@@ -78,7 +70,8 @@ void Graph::display() {
     for (int i = 0; i < this->_cap; i++) {
         for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
             Edge e = **it;
-            std::cout << i << " -> " << e.n << " ";
+            // i -> id of source vertex
+            std::cout << i << " -> " << e.n << " = " << e.cost << " ";
         }
         std::cout << "\n";
     }
