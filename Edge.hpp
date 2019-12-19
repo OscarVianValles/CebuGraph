@@ -1,5 +1,3 @@
-#include "Node.hpp"
-
 class Edge {
 public:
     int n; // id of destination node (or maybe ang node itself (?))

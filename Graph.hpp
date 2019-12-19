@@ -1,6 +1,11 @@
 #include "Node.hpp"
+#include "Edge.hpp"
 #include <list>
 #include <queue>
+#include <stack>
+#include <vector>
+#include <functional>
+#include <climits>
 
 class Graph {
 private:
@@ -16,6 +21,8 @@ public:
     void addVertex(std::string);
     void addEdge(int, int, int);
     void display();
+    void bfs(int);
+    std::stack<Edge*> shortestPath(int, int);
 };
 
 Graph::Graph(int cap) {
@@ -67,7 +74,7 @@ void Graph::addEdge(int a, int b, int cost) {
 }
 
 void Graph::display() {
-    for (int i = 0; i < this->_cap; i++) {
+    for (int i = 0; i < this->_size; i++) {
         for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
             Edge e = **it;
             // i -> id of source vertex
@@ -75,4 +82,95 @@ void Graph::display() {
         }
         std::cout << "\n";
     }
+}
+
+void Graph::bfs(int s) {
+
+}
+
+std::stack<Edge*> Graph::shortestPath(int s, int e) {
+    int size = this->_size;
+    int **costs; // matrix of the costs
+    int i = 0, j = 0;
+
+    // memory allocation
+    costs = new int*[size];
+    for (; i < size; i++) {
+        costs[i] = new int[size];
+
+        for (; j < size; j++)
+            costs[i][j] = INT_MAX;
+    }
+
+    int *dist = new int[size];
+    int *prev = new int[size];
+    bool *visit = new bool[size];
+
+    int min_dist = INT_MAX; // current minimum distation (big number)
+    int next;
+
+    // fills the costs array by the cost of each edges
+    for (i = 0; i < size; i++) {
+        for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
+            Edge e = **it;
+
+            costs[i][e.n] = e.cost;
+        }
+    }
+
+    // fill the dist array
+    // dist keep track of the costs
+    for (i = 0; i < size; i++) {
+        dist[i] = costs[s][i];
+        prev[i] = s;
+        visit[i] = false;
+    }
+
+    dist[s] = 0;
+    visit[s] = true;
+
+    // start search on neighbor vertices
+    for (i = 0; i < size; i++) {
+        if (dist[i] < min_dist && !visit[i]) {
+            min_dist = dist[i];
+            next = i;
+        }
+    }
+
+    // next vertex to visit
+    visit[next] = true;
+
+    // continue looking for the path
+    for (i = 0; i < size; i++) {
+        if (min_dist + costs[next][i] < dist[i] && !visit[i]) {
+            dist[i] = min_dist + costs[next][i];
+            prev[i] = next;
+        }
+    }
+
+    // create stack for the path
+    j = e;
+
+    if (prev[j] == s)
+        throw 404;
+
+    std::stack<Edge*> output;
+    Edge *edge = new Edge(e, dist[e]);
+    output.push(edge);
+
+    do {
+        j = prev[j];
+        edge = new Edge(j, dist[e]);
+        output.push(edge);
+    } while (j != s);
+
+    // free memory
+    for (i = 0; i < size; i++)
+        delete[] costs[i];
+    delete[] costs;
+    delete[] dist;
+    delete[] prev;
+    delete[] visit;
+
+    return output;
 }
