@@ -1,18 +1,18 @@
 #include "Node.hpp"
+#include "Edge.hpp"
 #include <list>
 #include <queue>
 
 class Graph {
 private:
     std::list<Node*> _vertex; // list of vertices (landmarks)
-    std::list<Edge*> *_adj; // list of edges (path)
+    std::vector< std::list<Edge*>> _adj; // list of edges (path)
     int _cap; // capacity for array of vertices to add edges on them
     int _size; // current number of vertices
 
 public:
     Graph(int);
     ~Graph();
-    void expand();
     void addVertex(std::string);
     void addEdge(int, int, int);
     void display();
@@ -21,40 +21,21 @@ public:
 Graph::Graph(int cap) {
     this->_size = 0;
     this->_cap = cap;
-    this->_adj = new std::list<Edge*>[cap];
+    this->_adj;
 }
 
-Graph::~Graph() { delete[] this->_adj; }
-
-void Graph::expand() {
-    int cap = this->_cap;
-    std::list<Edge*> tmp[cap];
-
-    // copy current vertices in temporary array
-    for (int i = 0; i < cap; i++) {
-        for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
-            tmp[i].push_back(*it);
-        }
-    }
-
-    this->_cap *= 2;
-    this->_adj = new std::list<Edge*>[this->_cap];
-
-    for (int i = 0; i < cap; i++) {
-        for (std::list<Edge*>::iterator it = tmp[i].begin(); it != tmp[i].end(); it++) {
-            this->_adj[i].push_back(*it);
-        }
-    }
+Graph::~Graph() { 
+//delete[] this->_adj; 
 }
 
 void Graph::addVertex(std::string name) {
     // add vertices (destinations)
-    if (this->_size + 1 >= this->_cap) // expand if number of vertices reached capacity
-        this->expand();
 
     Node *n = new Node(this->_size, name);
+    std::list<Edge*> *tmp = new std::list<Edge*>;
 
     // push to the list of vertex
+    this->_adj.push_back[tmp];
     this->_vertex.push_back(n);
     this->_size += 1;
 }
