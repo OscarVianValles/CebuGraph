@@ -4,7 +4,7 @@
 Map cebu;
 
 MapState::MapState(Application* app){
-	state = edgeStates = 0;
+	state = edgeStates = distanceStates = 0;
 	//background
 
 	texture.loadFromFile("content/mapsample.jpg");
@@ -40,6 +40,12 @@ MapState::MapState(Application* app){
 	cEdge.setFont(font);
 	cEdge.setPosition(60,200);
 	cEdge.setFillColor(sf::Color::Black);
+
+	//getDistance
+	buttonDistance.setFont(font);
+	buttonDistance.setPosition(250,100);
+	buttonDistance.setFillColor(sf::Color::Black);
+	buttonDistance.setString("GET DISTANCE");
 
 	a = b = -1;
 
@@ -83,6 +89,10 @@ void MapState::handleInput(){
 						ButtonEdge.setFillColor(sf::Color::Blue);
 					else
 						ButtonEdge.setFillColor(sf::Color::Black);
+					if (isTextClicked(buttonDistance))
+						buttonDistance.setFillColor(sf::Color::Blue);
+					else
+						buttonDistance.setFillColor(sf::Color::Black);
 				}
 				break;
 			case sf::Event::TextEntered:
@@ -101,27 +111,65 @@ void MapState::handleInput(){
 					}
 				}
 				if(event.text.unicode == 32){
-					if(edgeStates == 1 && a >= 0){
-						statusG.setString("Select Destination Landmark");
-						edgeStates = 2;
+					if(state == 1){
+						if(edgeStates == 1 && a >= 0){
+							statusG.setString("Select Destination Landmark");
+							edgeStates = 2;
+						}
+						else if(edgeStates == 2 && b >= 0){
+							statusG.setString("Enter Distance(km): ");
+							menu.setSize(sf::Vector2f(500, 150));
+							edgeStates = 3;
+							// std::cout<<edgeStates<<std::endl;
+						}
+						else if(edgeStates == 3){
+							cebu.addRoad(a, b , atoi(c.c_str()));
+							cebu.makeRoad(a, b);
+							cebu._landmarks[b].setTexture(cebu._texture);
+							cebu._selected[b] = false;
+							statusG.setString("Creating Road . . .\nPress Space to Continue");
+							edgeStates = 4;
+						}
+						else if(edgeStates == 4){
+							cebu._graphs.display();
+							state = 0;
+							menu.setSize(sf::Vector2f(500, 100));
+						}
 					}
-					else if(edgeStates == 2 && b >= 0){
-						statusG.setString("Enter Distance(km): ");
-						menu.setSize(sf::Vector2f(500, 150));
-						edgeStates = 3;
-						std::cout<<edgeStates<<std::endl;
-					}
-					else if(edgeStates == 3){
-						cebu.addRoad(a, b , atoi(c.c_str()));
-						cebu.makeRoad(a, b);
-						cebu._landmarks[b].setTexture(cebu._texture);
-						cebu._selected[b] = false;
-						statusG.setString("Creating Road . . .\nPress Space to Continue");
-						edgeStates = 4;
-					}
-					else if(edgeStates == 4){
-						state = 0;
-						menu.setSize(sf::Vector2f(500, 100));
+					else if(state == 2){
+						if(distanceStates == 1 && aDist >=0){
+							statusG.setString("Select Destination Landmark");
+							distanceStates = 2;
+						}
+						else if(distanceStates == 2 && bDist >= 0){
+							cebu._landmarks[b].setTexture(cebu._texture);
+							cebu._selected[b] = false;
+							statusG.setString("Press Space to get Distance");
+							distanceStates = 3;
+							// std::cout<<edgeStates<<std::endl;
+						}
+						else if(distanceStates == 3){
+							try{
+								int tempA = 0, tempB=0;
+								std::stack<Edge*> out = cebu._graphs.shortestPath(aDist, bDist);
+        						while (!out.empty()) {
+									std::cout << out.top()->n << " ";
+									tempA = out.top()->n;
+									out.pop();
+									tempB = out.top()->n;
+									cebu.changePath(tempA, tempB);
+								}
+								std::cout << "\n";
+							} catch (int e){
+								statusG.setString("Shortest Path: NO PATH");
+								std::cout<<"no path"<<std::endl;
+							}
+							distanceStates = 4;
+						}
+						else if(distanceStates == 4){
+							cebu.resetPath();
+							state = 0;
+						}
 					}
 				}
 				break;
@@ -135,6 +183,9 @@ void MapState::handleInput(){
 			if(state == 1){
 				addRoad(event);
 			}
+			if(state == 2){
+				getShortest(event);
+			}
 			if (isTextClicked(buttons[1]))
             	addLocation();
 			else if (isTextClicked(buttons[2]))
@@ -143,6 +194,12 @@ void MapState::handleInput(){
 				state = 1;
 				edgeStates = 1;
 				ButtonEdge.setFillColor(sf::Color::Red);
+				statusG.setString("Select Landmark Source: ");
+			}
+			else if (isTextClicked(buttonDistance) && state == 0){
+				state = 2;
+				distanceStates = 1;
+				buttonDistance.setFillColor(sf::Color::Red);
 				statusG.setString("Select Landmark Source: ");
 			}
 	}
@@ -183,6 +240,41 @@ void MapState::addRoad(sf::Event event){
 	}
 }
 
+void MapState::getShortest(sf::Event event){
+	switch (distanceStates)
+	{
+	case 1:
+	{
+		int selected  = cebu.select(event, app->window);
+			aDist = selected;
+			if(selected>-1){
+				source.update(cebu._names[selected]);
+			}
+			else
+				source.update("Select");
+		break;
+	}
+	case 2:
+	{
+		int selected  = cebu.select(event, app->window);
+		if(selected != aDist){
+			bDist = selected;
+			if(selected>-1){
+				source.update(cebu._names[selected]);
+			}
+			else
+				source.update("Select");
+		}
+		else{
+			statusG.setString("Select a different location:");
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 void MapState::update(const float dt){
 	(void)dt;
 }
@@ -199,6 +291,7 @@ void MapState::draw(const float dt){
 	app->window.draw(menu);
 	if(state == 0){
 		app->window.draw(ButtonEdge);
+		app->window.draw(buttonDistance);
 	}
 	else if(state == 1){
 		if(edgeStates == 1){
@@ -211,6 +304,16 @@ void MapState::draw(const float dt){
 			app->window.draw(cEdge);
 		}
 		app->window.draw(ButtonEdge);
+		app->window.draw(statusG);
+	}
+	else if(state == 2){
+		if(distanceStates == 1)
+			source.draw(app->window);
+		else if(distanceStates == 2)
+			source.draw(app->window);
+		else if(distanceStates == 3)
+			source.draw(app->window);
+		app->window.draw(buttonDistance);
 		app->window.draw(statusG);
 	}
 // 	sf::VertexArray lines(sf::Quads, 4);

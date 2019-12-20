@@ -41,7 +41,7 @@ void Map::drawAll(sf::RenderWindow& window){
 
 void Map::makeRoad(int a, int b){
 	Road temp;
-	temp.makeRoad(_landmarks[a].getPosition(), _landmarks[b].getPosition());
+	temp.makeRoad(_landmarks[a].getPosition(), _landmarks[b].getPosition(),a,b);
 	_roads.push_back(temp);
 }
 
@@ -75,4 +75,19 @@ int Map::select(sf::Event event, sf::RenderWindow& window){
 			return i;
 	}
 	return -1;
+}
+
+void Map::changePath(int a, int b){
+	int Rsize = _roads.size();
+	for(int i = 0; i<Rsize; i++){
+		if(_roads[i].source == a && _roads[i].destination == b)
+			_roads[i].changePathColor();
+	}
+}
+
+void Map::resetPath(){
+	int Rsize = _roads.size();
+	for(int i = 0; i<Rsize; i++){
+		_roads[i].resetColor();
+	}
 }

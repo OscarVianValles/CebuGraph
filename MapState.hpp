@@ -32,6 +32,7 @@ class MapState : public StateManager
 		void updateTraffic();
 
 		void addRoad(sf::Event);
+		void getShortest(sf::Event);
 
 		Ribbon source;
 
@@ -43,7 +44,12 @@ class MapState : public StateManager
 		std::string c;
 		sf::Text ButtonEdge, cEdge;
 		int edgeStates;
+
 		//getDistance
+		int aDist, bDist;
+		sf::Text buttonDistance;
+		int distanceStates;
+
 
 		int state;
 };

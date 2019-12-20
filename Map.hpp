@@ -27,6 +27,9 @@ class Map
 		void drawAll(sf::RenderWindow&);
 		void makeRoad(int, int);
 		int select(sf::Event, sf::RenderWindow&);
+
+		void changePath(int, int);
+		void resetPath();
 		int size;
 };
 
