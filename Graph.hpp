@@ -97,12 +97,13 @@ std::stack<Edge*> Graph::shortestPath(int s, int e) {
     costs = new int*[size];
     for (; i < size; i++) {
         costs[i] = new int[size];
-
-        for (; j < size; j++)
-            costs[i][j] = INT_MAX;
     }
 
-    int *dist = new int[size];
+    for (i = 0; i < size; i++)
+        for (j = 0; j < size; j++)
+            costs[i][j] = INT_MAX;
+
+    unsigned int *dist = new unsigned int[size];
     int *prev = new int[size];
     bool *visit = new bool[size];
 
@@ -116,6 +117,13 @@ std::stack<Edge*> Graph::shortestPath(int s, int e) {
 
             costs[i][e.n] = e.cost;
         }
+    }
+
+    for (i = 0; i < size; i++) {
+        for (j = 0; j < size; j++) {
+            std::cout << costs[i][j] << " ";
+        }
+        std::cout << "\n";
     }
 
     // fill the dist array
@@ -151,8 +159,9 @@ std::stack<Edge*> Graph::shortestPath(int s, int e) {
     // create stack for the path
     j = e;
 
-    if (prev[j] == s)
-        throw 404;
+    // no path found 
+    if (dist[e] >= INT_MAX)
+        throw  0;
 
     std::stack<Edge*> output;
     Edge *edge = new Edge(e, dist[e]);

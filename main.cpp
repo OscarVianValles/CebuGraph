@@ -50,9 +50,9 @@ int main() {
     g.display();
 
     try {
-        std::stack<Edge*> out = g.shortestPath(1, 8);
+        std::stack<Edge*> out = g.shortestPath(1, 7);
         display(out);
-    } catch (int e) {
+    } catch (int err) {
         std::cout << "No path" << "\n";
     }
 
