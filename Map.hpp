@@ -19,7 +19,7 @@ class Map
 	public:
 		Map();
 		//~Map();
-		void addLandmark(std::string);
+		void addLandmark(std::string, int, int);
 		void addRoad(int, int, int);
 		sf::Sprite drawLandmarks(int);
 		void drawAll(sf::RenderWindow&);

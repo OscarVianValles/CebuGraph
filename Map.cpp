@@ -8,12 +8,12 @@ Map::Map(){
 	isSelected = false;
 }
 
-void Map::addLandmark(std::string name){
+void Map::addLandmark(std::string name,int x, int y){
 	_names.push_back(name);
 	_graphs.addVertex(name);
 	sf::Sprite temp;
 	temp.setTexture(_texture);
-	temp.setPosition(sf::Vector2f(512, 384));
+	temp.setPosition(sf::Vector2f(x, y));
 	_landmarks.push_back(temp);
 	_selected.push_back(false);
 	size++;
@@ -21,8 +21,6 @@ void Map::addLandmark(std::string name){
 
 void Map::addRoad(int a, int b,  int cost){
 	_graphs.addEdge(a,b, cost);
-
-	_landmarks[a].setPosition(_landmarks[b].getPosition().x, _landmarks[b].getPosition().y + cost);
 }
 
 sf::Sprite Map::drawLandmarks(int pos){

@@ -19,9 +19,11 @@ class AddLocationState : public StateManager
 		AddLocationState(Application* app);
 
 
-		void addLandmark(int, sf::Event);
+		void addLandmarkState(sf::Event);
 	private:
 		bool isTextClicked(sf::Text text);
+
+		sf::RectangleShape menu;
 
 		sf::Texture texture;
 		sf::Sprite menuSprite;
@@ -33,14 +35,16 @@ class AddLocationState : public StateManager
 		void getDestination();
 		void updateTraffic();
 
-		std::string playerInput;
-		sf::Text playerText;
+		//all
+		std::string status;
+		sf::Text statusG;
+		//landmark
+		std::string name, x, y;
+		sf::Text buttonLG, nameG, xG, yG;
+		int landmarkState;
 
-		std::string location;
-		sf::Text locationText;
-
-		int stateInput;
-
+		//state
+		int state; //1 = land. 2 = road, 0 = none(select)
 };
 
 #endif

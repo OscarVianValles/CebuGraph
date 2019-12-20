@@ -2,10 +2,19 @@
 #include <iostream>
 
 AddLocationState::AddLocationState(Application* app){
-	stateInput = 0;
+	state = 0;
+	landmarkState = 0;
+
 	//background
 	texture.loadFromFile("content/mapsample.jpg");
 	menuSprite.setTexture(texture);
+
+	//menu
+	menu.setSize(sf::Vector2f(800, 300));
+	menu.setFillColor(sf::Color::White);
+	menu.setOutlineColor(sf::Color::Black);
+	menu.setOutlineThickness(5);
+	menu.setPosition(sf::Vector2f(100,250));
 
 	//text
 	sf::Text text;
@@ -16,15 +25,28 @@ AddLocationState::AddLocationState(Application* app){
     text.setFillColor(sf::Color::Black);   // set the color
     text.setStyle(sf::Text::Bold); // set the text style
 
-	playerText.setFont(font);
-	playerText.setPosition(60,300);
-	playerText.setFillColor(sf::Color::Red);
-	playerText.setString("enter Location: ");
+	//all
+	statusG.setFont(font);
+	statusG.setPosition(110,350);
+	statusG.setFillColor(sf::Color::Black);
 
-	locationText.setFont(font);
-	locationText.setPosition(60,600);
-	locationText.setFillColor(sf::Color::Red);
-	locationText.setString("enter Location: ");
+	//Landmark
+	buttonLG.setFont(font);
+	buttonLG.setPosition(110,250);
+	buttonLG.setFillColor(sf::Color::Black);
+	buttonLG.setString("ADD LANDMARK");
+
+	nameG.setFont(font);
+	nameG.setPosition(110,450);
+	nameG.setFillColor(sf::Color::Black);
+
+	xG.setFont(font);
+	xG.setPosition(110,450);
+	xG.setFillColor(sf::Color::Black);
+
+	yG.setFont(font);
+	yG.setPosition(110,450);
+	yG.setFillColor(sf::Color::Black);
 
 	 //set positions of things
     for (int i = 0; i < NUM_BUTTONS; i++)
@@ -63,12 +85,17 @@ void AddLocationState::handleInput(){
 					buttons[2].setFillColor(sf::Color::Blue);
 				else
 					buttons[2].setFillColor(sf::Color::Black);
+				if(state==0){
+					if (isTextClicked(buttonLG))
+						buttonLG.setFillColor(sf::Color::Blue);
+					else
+						buttonLG.setFillColor(sf::Color::Black);
+				}
 				break;
-			 case sf::Event::TextEntered:
-			 	if(event.text.unicode == 32){
-					 stateInput++;
-				 }
-				 addLandmark(stateInput, event);
+			case sf::Event::TextEntered:
+				if(state == 1){
+					addLandmarkState(event);
+				}
 				break;
 			default:
 				break;
@@ -82,63 +109,88 @@ void AddLocationState::handleInput(){
             getDestination();
 		else if (isTextClicked(buttons[2]))
             updateTraffic();
+		else if (isTextClicked(buttonLG) && state == 0){
+            state = 1;
+			landmarkState = 1;
+			buttonLG.setFillColor(sf::Color::Red);
+			statusG.setString("Enter Landmark Name: ");
+		}
 	}
 }
 
-void AddLocationState::addLandmark(int state, sf::Event event){
-
-		std::cout<<stateInput<<std::endl;
-	switch(state){
-		case 0://vertex
+void AddLocationState::addLandmarkState(sf::Event event){
+	switch(landmarkState){
+		case 1:
 			if(event.text.unicode < 128 && event.text.unicode >64)
 				{
-					playerInput +=event.text.unicode;
-					playerText.setString(playerInput);
+					name +=event.text.unicode;
+					nameG.setString(name);
 				}
 			else if(event.text.unicode == 8)
 			{
-				if(!playerInput.empty()){
-				playerInput.erase(playerInput.size() - 1);
-				playerText.setString(playerInput);
+				if(!name.empty()){
+				name.erase(name.size() - 1);
+				nameG.setString(name);
 				}
 			}
-			break;
-		case 1:
-			if(cebu.size == 0){
-				cebu.addLandmark(playerInput);
-				stateInput = 3;
-				playerText.setString("root added");
-			}
-			else{
-				cebu.addLandmark(playerInput);
-				playerText.setString("add location");
-				playerInput.erase();
-				stateInput = 2;
+			else if(event.text.unicode == 32){
+				if(!name.empty()){
+					statusG.setString("Enter Position (X):");
+					landmarkState = 2;
+				}
+				else
+					statusG.setString("Enter Landmark Name pls:");
 			}
 			break;
 		case 2:
 			if(event.text.unicode < 58 && event.text.unicode >47)
 				{
-					location +=event.text.unicode;
-					locationText.setString(location);
+					x +=event.text.unicode;
+					xG.setString(x);
 				}
 			else if(event.text.unicode == 8)
 			{
-				if(!location.empty()){
-				location.erase(location.size() - 1);
-				locationText.setString(location);
+				if(!x.empty()){
+				x.erase(x.size() - 1);
+				xG.setString(x);
 				}
+			}
+			else if(event.text.unicode == 32){
+				if(!name.empty()){
+					statusG.setString("Enter Position (Y):");
+					landmarkState = 3;
+				}
+				else
+					statusG.setString("Enter Valid Positon (X):");
 			}
 			break;
 		case 3:
-			locationText.setString("location added");
-			cebu.addRoad(1, 0, 100);
+			if(event.text.unicode < 58 && event.text.unicode >47)
+				{
+					y +=event.text.unicode;
+					yG.setString(y);
+				}
+			else if(event.text.unicode == 8)
+			{
+				if(!y.empty()){
+				y.erase(y.size() - 1);
+				yG.setString(y);
+				}
+			}
+			else if(event.text.unicode == 32){
+				if(!name.empty()){
+					statusG.setString("Creating Landmark . . . .\n\n\nPress Space to Continue");
+					cebu.addLandmark(name, atoi(x.c_str()), atoi(y.c_str()));
+					landmarkState = 4;
+				}
+				else
+					statusG.setString("Enter Valid Positon (Y):");
+			}
 			break;
 		default:
 			getDestination();
 			break;
 	}
-
 }
 
 void AddLocationState::update(const float dt){
@@ -152,8 +204,23 @@ void AddLocationState::draw(const float dt){
 	for(auto x : buttons)
 		app->window.draw(x);
 
-	app->window.draw(playerText);
-	app->window.draw(locationText);
+	app->window.draw(menu);
+	if(state == 0){
+		app->window.draw(buttonLG);
+	}
+	else if(state == 1){
+		if(landmarkState == 1){
+			app->window.draw(nameG);
+		}
+		else if(landmarkState == 2){
+			app->window.draw(xG);
+		}
+		else if(landmarkState == 3){
+			app->window.draw(yG);
+		}
+		app->window.draw(statusG);
+		app->window.draw(buttonLG);
+	}
 }
 
 bool AddLocationState::isTextClicked(sf::Text text)
