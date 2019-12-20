@@ -31,7 +31,21 @@ class MapState : public StateManager
 		void addLocation();
 		void updateTraffic();
 
+		void addRoad(sf::Event);
+
 		Ribbon source;
+
+		sf::Text statusG;
+		sf::RectangleShape menu;
+
+		//addEdge
+		int a, b;
+		std::string c;
+		sf::Text ButtonEdge, cEdge;
+		int edgeStates;
+		//getDistance
+
+		int state;
 };
 
 #endif

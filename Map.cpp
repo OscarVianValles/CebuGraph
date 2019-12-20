@@ -13,6 +13,7 @@ void Map::addLandmark(std::string name,int x, int y){
 	_graphs.addVertex(name);
 	sf::Sprite temp;
 	temp.setTexture(_texture);
+	temp.setOrigin(_texture.getSize().x / 2, _texture.getSize().y / 2);
 	temp.setPosition(sf::Vector2f(x, y));
 	_landmarks.push_back(temp);
 	_selected.push_back(false);
@@ -28,9 +29,20 @@ sf::Sprite Map::drawLandmarks(int pos){
 }
 
 void Map::drawAll(sf::RenderWindow& window){
+	int Rsize = _roads.size();
+	for(int i = 0; i<Rsize; i++){
+		window.draw(_roads[i].lines);
+	}
+
 	for(int i = 0; i<size;i++){
 		window.draw(_landmarks[i]);
 	}
+}
+
+void Map::makeRoad(int a, int b){
+	Road temp;
+	temp.makeRoad(_landmarks[a].getPosition(), _landmarks[b].getPosition());
+	_roads.push_back(temp);
 }
 
 int Map::select(sf::Event event, sf::RenderWindow& window){

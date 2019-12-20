@@ -1,22 +1,22 @@
 #include "Ribbon.hpp"
 
 Ribbon::Ribbon(){
-	_ribbon.setSize(sf::Vector2f(800,100));
-	_ribbon.setOrigin(sf::Vector2f(400, 50));
-	_ribbon.setPosition(sf::Vector2f(512, 150));
+	_ribbon.setSize(sf::Vector2f(800,50));
+	_ribbon.setOrigin(sf::Vector2f(400, 25));
+	_ribbon.setPosition(sf::Vector2f(512, 700));
 	_ribbon.setFillColor(sf::Color::White);
 	_ribbon.setOutlineColor(sf::Color::Black);
 	_ribbon.setOutlineThickness(5);
 
 	_font.loadFromFile("content/OPM.otf");
 	_source.setFont(_font);
-	_source.setPosition(sf::Vector2f(150, 130));
+	_source.setPosition(sf::Vector2f(120, 680));
 	_source.setFillColor(sf::Color::Black);
 	_source.setCharacterSize(24);
-	_source.setString("Source: ");
+	_source.setString("Landmark: ");
 
 	_destination.setFont(_font);
-	_destination.setPosition(sf::Vector2f(250, 130));
+	_destination.setPosition(sf::Vector2f(250, 680));
 	_destination.setFillColor(sf::Color::Black);
 	_destination.setCharacterSize(24);
 }

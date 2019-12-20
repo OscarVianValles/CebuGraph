@@ -6,7 +6,7 @@
 
 class Ribbon
 {
-	private:
+	public:
 		sf::RectangleShape _ribbon;
 		sf::Font _font;
 		sf::Text _source;

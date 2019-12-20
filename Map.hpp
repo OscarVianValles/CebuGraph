@@ -5,6 +5,7 @@
 #include "Graph.hpp"
 #include<SFML/Graphics.hpp>
 #include <vector>
+#include "Road.hpp"
 
 class Map
 {
@@ -16,6 +17,7 @@ class Map
 		std::vector<sf::Sprite> _landmarks;
 		std::vector<std::string> _names;
 		std::vector<bool> _selected;
+		std::vector<Road> _roads;
 	public:
 		Map();
 		//~Map();
@@ -23,7 +25,7 @@ class Map
 		void addRoad(int, int, int);
 		sf::Sprite drawLandmarks(int);
 		void drawAll(sf::RenderWindow&);
-
+		void makeRoad(int, int);
 		int select(sf::Event, sf::RenderWindow&);
 		int size;
 };
