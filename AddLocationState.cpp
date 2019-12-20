@@ -2,6 +2,7 @@
 #include <iostream>
 
 AddLocationState::AddLocationState(Application* app){
+	stateInput = 0;
 	//background
 	texture.loadFromFile("content/mapsample.jpg");
 	menuSprite.setTexture(texture);
@@ -14,6 +15,16 @@ AddLocationState::AddLocationState(Application* app){
     text.setCharacterSize(24); // in pixels, not points!
     text.setFillColor(sf::Color::Black);   // set the color
     text.setStyle(sf::Text::Bold); // set the text style
+
+	playerText.setFont(font);
+	playerText.setPosition(60,300);
+	playerText.setFillColor(sf::Color::Red);
+	playerText.setString("enter Location: ");
+
+	locationText.setFont(font);
+	locationText.setPosition(60,600);
+	locationText.setFillColor(sf::Color::Red);
+	locationText.setString("enter Location: ");
 
 	 //set positions of things
     for (int i = 0; i < NUM_BUTTONS; i++)
@@ -29,6 +40,8 @@ AddLocationState::AddLocationState(Application* app){
 
 	buttons[1].setFillColor(sf::Color::Red);
 	this->app = app;
+
+
 }
 
 void AddLocationState::handleInput(){
@@ -51,6 +64,12 @@ void AddLocationState::handleInput(){
 				else
 					buttons[2].setFillColor(sf::Color::Black);
 				break;
+			 case sf::Event::TextEntered:
+			 	if(event.text.unicode == 32){
+					 stateInput++;
+				 }
+				 addLandmark(stateInput, event);
+				break;
 			default:
 				break;
 		}
@@ -66,6 +85,62 @@ void AddLocationState::handleInput(){
 	}
 }
 
+void AddLocationState::addLandmark(int state, sf::Event event){
+
+		std::cout<<stateInput<<std::endl;
+	switch(state){
+		case 0://vertex
+			if(event.text.unicode < 128 && event.text.unicode >64)
+				{
+					playerInput +=event.text.unicode;
+					playerText.setString(playerInput);
+				}
+			else if(event.text.unicode == 8)
+			{
+				if(!playerInput.empty()){
+				playerInput.erase(playerInput.size() - 1);
+				playerText.setString(playerInput);
+				}
+			}
+			break;
+		case 1:
+			if(cebu.size == 0){
+				cebu.addLandmark(playerInput);
+				stateInput = 3;
+				playerText.setString("root added");
+			}
+			else{
+				cebu.addLandmark(playerInput);
+				playerText.setString("add location");
+				playerInput.erase();
+				stateInput = 2;
+			}
+			break;
+		case 2:
+			if(event.text.unicode < 58 && event.text.unicode >47)
+				{
+					location +=event.text.unicode;
+					locationText.setString(location);
+				}
+			else if(event.text.unicode == 8)
+			{
+				if(!location.empty()){
+				location.erase(location.size() - 1);
+				locationText.setString(location);
+				}
+			}
+			break;
+		case 3:
+			locationText.setString("location added");
+			cebu.addRoad(1, 0, 100);
+			break;
+		default:
+			getDestination();
+			break;
+	}
+
+}
+
 void AddLocationState::update(const float dt){
 	(void)dt;
 }
@@ -76,6 +151,9 @@ void AddLocationState::draw(const float dt){
 
 	for(auto x : buttons)
 		app->window.draw(x);
+
+	app->window.draw(playerText);
+	app->window.draw(locationText);
 }
 
 bool AddLocationState::isTextClicked(sf::Text text)

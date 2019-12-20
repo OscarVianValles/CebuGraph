@@ -2,13 +2,14 @@
 #include <iostream>
 
 Map cebu;
+
 MapState::MapState(Application* app){
 	//buildings
-	cebu.addLandmark("SOGO");
-	cebu.addLandmark("UP Cebu");
+	// cebu.addLandmark("SOGO");
+	// cebu.addLandmark("UP Cebu");
 
-	cebu.addRoad(0, 1, 200);
-	cebu.addRoad(1,0, 100);
+	// cebu.addRoad(0, 1, 200);
+	// cebu.addRoad(1,0, 100);
 	//background
 	texture.loadFromFile("content/mapsample.jpg");
 	menuSprite.setTexture(texture);

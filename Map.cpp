@@ -13,6 +13,7 @@ void Map::addLandmark(std::string name){
 	_graphs.addVertex(name);
 	sf::Sprite temp;
 	temp.setTexture(_texture);
+	temp.setPosition(sf::Vector2f(512, 384));
 	_landmarks.push_back(temp);
 	_selected.push_back(false);
 	size++;
@@ -21,7 +22,7 @@ void Map::addLandmark(std::string name){
 void Map::addRoad(int a, int b,  int cost){
 	_graphs.addEdge(a,b, cost);
 
-	_landmarks[a].setPosition(cost, cost+500);
+	_landmarks[a].setPosition(_landmarks[b].getPosition().x, _landmarks[b].getPosition().y + cost);
 }
 
 sf::Sprite Map::drawLandmarks(int pos){

@@ -3,6 +3,7 @@
 #define ADD_LOCATION_STATE_HPP
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #include "StateManager.hpp"
 #include "MapState.hpp"
@@ -16,6 +17,9 @@ class AddLocationState : public StateManager
 		virtual void handleInput();
 
 		AddLocationState(Application* app);
+
+
+		void addLandmark(int, sf::Event);
 	private:
 		bool isTextClicked(sf::Text text);
 
@@ -28,6 +32,15 @@ class AddLocationState : public StateManager
 
 		void getDestination();
 		void updateTraffic();
+
+		std::string playerInput;
+		sf::Text playerText;
+
+		std::string location;
+		sf::Text locationText;
+
+		int stateInput;
+
 };
 
 #endif
