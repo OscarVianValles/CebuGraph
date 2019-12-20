@@ -119,13 +119,6 @@ std::stack<Edge*> Graph::shortestPath(int s, int e) {
         }
     }
 
-    for (i = 0; i < size; i++) {
-        for (j = 0; j < size; j++) {
-            std::cout << costs[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
-
     // fill the dist array
     // dist keep track of the costs
     for (i = 0; i < size; i++) {
@@ -159,7 +152,7 @@ std::stack<Edge*> Graph::shortestPath(int s, int e) {
     // create stack for the path
     j = e;
 
-    // no path found 
+    // no path found
     if (dist[e] >= INT_MAX)
         throw  0;
 
