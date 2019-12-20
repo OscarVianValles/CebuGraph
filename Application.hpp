@@ -1,16 +1,26 @@
-#ifndef CEBU_APPLICATION
-#define CEBU_APPLICATION
+#ifndef APPLICATION_HPP
+#define APPLICATION_HPP
 
-#include <SFML/System/Time.hpp>
+#include <vector>
+#include <SFML/Graphics.hpp>
 
-class Application {
-public:
-  Application();
-  void run();
+class StateManager;
 
-private:
-  void processInput();
-  void update(sf::Time dt);
-  void render();
+class Application{
+	private:
+		std::vector<StateManager*> _states;
+	public:
+		Application();
+		~Application();
+
+		void pushState(StateManager* state);
+		void popState();
+
+		StateManager* currentState();
+
+		void appLoop();
+
+		sf::RenderWindow window;
 };
+
 #endif

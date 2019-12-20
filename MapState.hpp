@@ -7,7 +7,8 @@
 #include "StateManager.hpp"
 #include "AddLocationState.hpp"
 #include "TrafficState.hpp"
-#include "building.hpp"
+#include "Map.hpp"
+#include "Ribbon.hpp"
 
 class MapState : public StateManager
 {
@@ -20,8 +21,6 @@ class MapState : public StateManager
 	private:
 		bool isTextClicked(sf::Text text);
 
-		building landmark[3];
-
 		sf::Texture texture;
 		sf::Sprite menuSprite;
 		std::vector<sf::Text> buttons;
@@ -31,6 +30,8 @@ class MapState : public StateManager
 
 		void addLocation();
 		void updateTraffic();
+
+		Ribbon source;
 };
 
 #endif

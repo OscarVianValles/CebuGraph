@@ -1,7 +1,14 @@
-#include "AddLocationState.hpp"
+#include "MapState.hpp"
 #include <iostream>
 
-AddLocationState::AddLocationState(Application* app){
+Map cebu;
+MapState::MapState(Application* app){
+	//buildings
+	cebu.addLandmark("SOGO");
+	cebu.addLandmark("UP Cebu");
+
+	cebu.addRoad(0, 1, 200);
+	cebu.addRoad(1,0, 100);
 	//background
 	texture.loadFromFile("content/mapsample.jpg");
 	menuSprite.setTexture(texture);
@@ -27,11 +34,11 @@ AddLocationState::AddLocationState(Application* app){
     buttons[1].setString("Add Landmark");
     buttons[2].setString("Update Traffic");
 
-	buttons[1].setFillColor(sf::Color::Red);
+	buttons[0].setFillColor(sf::Color::Red);
 	this->app = app;
 }
 
-void AddLocationState::handleInput(){
+void MapState::handleInput(){
 	sf::Event event;
 
 	while(app->window.pollEvent(event))
@@ -42,10 +49,10 @@ void AddLocationState::handleInput(){
 				app->window.close();
 				break;
 			case sf::Event::MouseMoved:
-				if (isTextClicked(buttons[0]))
-					buttons[0].setFillColor(sf::Color::Blue);
+				if (isTextClicked(buttons[1]))
+					buttons[1].setFillColor(sf::Color::Blue);
 				else
-					buttons[0].setFillColor(sf::Color::Black);
+					buttons[1].setFillColor(sf::Color::Black);
 				if (isTextClicked(buttons[2]))
 					buttons[2].setFillColor(sf::Color::Blue);
 				else
@@ -58,27 +65,35 @@ void AddLocationState::handleInput(){
 
 	if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		//changestate
-		if (isTextClicked(buttons[0]))
-            getDestination();
-		else if (isTextClicked(buttons[2]))
-            updateTraffic();
+
+			int selected  = cebu.select(event, app->window);
+			if(selected>-1)
+				source.update(cebu._names[selected]);
+			else
+				source.update("Select");
+			if (isTextClicked(buttons[1]))
+            	addLocation();
+			else if (isTextClicked(buttons[2]))
+            	updateTraffic();
 	}
 }
 
-void AddLocationState::update(const float dt){
+void MapState::update(const float dt){
 	(void)dt;
 }
 
-void AddLocationState::draw(const float dt){
+void MapState::draw(const float dt){
 	(void)dt;
 	app->window.draw(menuSprite);
 
 	for(auto x : buttons)
 		app->window.draw(x);
+
+	cebu.drawAll(app->window);
+	source.draw(app->window);
 }
 
-bool AddLocationState::isTextClicked(sf::Text text)
+bool MapState::isTextClicked(sf::Text text)
 {
     sf::IntRect rect(text.getPosition().x, text.getPosition().y, text.getGlobalBounds().width, text.getGlobalBounds().height);
 
@@ -91,10 +106,11 @@ bool AddLocationState::isTextClicked(sf::Text text)
     return false;
 }
 
-void AddLocationState::getDestination(){
-	app->pushState(new MapState(app));
+void MapState::addLocation(){
+	app->pushState(new AddLocationState(app));
 }
 
-void AddLocationState::updateTraffic(){
+void MapState::updateTraffic(){
+	//app->pushState()
 	app->pushState(new TrafficState(app));
 }
