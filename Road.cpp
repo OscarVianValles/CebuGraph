@@ -21,7 +21,7 @@ void Road::makeRoad(sf::Vector2f a, sf::Vector2f b, int c, int d) {
   lines[3].position = sf::Vector2f(b.x - thickness, b.y);
 
   source = c;
-  source = d;
+  destination = d;
 }
 
 void Road::changePathColor() {

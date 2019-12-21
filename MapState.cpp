@@ -131,8 +131,8 @@ void MapState::handleInput() {
             statusG.setString("Select Destination Landmark");
             distanceStates = 2;
           } else if (distanceStates == 2 && bDist >= 0) {
-            cebu._landmarks[b].setTexture(cebu._texture);
-            cebu._selected[b] = false;
+            cebu._landmarks[bDist].setTexture(cebu._texture);
+            cebu._selected[bDist] = false;
             statusG.setString("Press Space to get Distance");
             distanceStates = 3;
             // std::cout<<edgeStates<<std::endl;
@@ -140,7 +140,7 @@ void MapState::handleInput() {
             try {
               int tempA = 0, tempB = 0;
               std::stack<Edge *> out = cebu._graphs.shortestPath(aDist, bDist);
-              while (!out.empty()) {
+              while (out.size() != 1) {
                 std::cout << out.top()->n << " ";
                 tempA = out.top()->n;
                 out.pop();
