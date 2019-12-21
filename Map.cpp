@@ -149,7 +149,7 @@ Map::Map() {
   addLandmark("Dynasty tourist inn", 468, 336);
   addLandmark("EV English Academy", 718, 3);
   addLandmark("Emall", 534, 506);
-  addLandmark("Gaisano Country Mall", 570, 200);
+  addLandmark("Gaisano Country Mall", 715, 60);
   addLandmark("Gaisano Express Tres", 310, 510);
   addLandmark("Gaisano Grand Jai Alai", 280, 530);
   addLandmark("Gaisano Inayawan", 120, 730);
@@ -159,7 +159,7 @@ Map::Map() {
   addLandmark("Galleria", 700, 420);
   addLandmark("Garden Bloc", 650, 124);
   addLandmark("Giuseppe Pizzeria & Sicilian Roast", 710, 20);
-  addLandmark("GoFood Concept Buffet Area", 0, 0);
+  addLandmark("GoFood Concept Buffet Area", 662, 138);
   addLandmark("Golden Peak", 0, 0);
   addLandmark("Golden Prince Hotel", 0, 0);
   addLandmark("Grand Convention Center", 0, 0);
