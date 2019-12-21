@@ -7,7 +7,8 @@ Map::Map() {
   _select.loadFromFile("content/smol2.png");
   isSelected = false;
   // Adding data
-  addLandmark("360 Pharmacy Kinasang-an", 0, 0);
+  addLandmark("root", -10, -10);
+  addLandmark("360 Pharmacy Kinasang-an", 20, 20);
   addLandmark("AA BBQ", 0, 0);
   addLandmark("AA BBQ Guada", 0, 0);
   addLandmark("ACT - Bulacao", 0, 0);
