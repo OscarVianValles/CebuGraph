@@ -1074,7 +1074,7 @@ Map::Map() {
   addRoad(399, 318, 93);
   addRoad(318, 399, 93);
   addRoad(403, 100, 65);
-  addRoad(, 403, 65);
+  addRoad(100, 403, 65);
   addRoad(405, 150, 600);
   addRoad(406, 131, 180);
   addRoad(407, 71, 400);
