@@ -103,7 +103,7 @@ std::stack<Edge*> Graph::shortestPath(int s, int e) {
         for (j = 0; j < size; j++)
             costs[i][j] = INT_MAX;
 
-    unsigned int *dist = new unsigned int[size];
+    int *dist = new int[size];
     int *prev = new int[size];
     bool *visit = new bool[size];
 
