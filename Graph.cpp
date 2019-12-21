@@ -1,161 +1,162 @@
 #include "Graph.hpp"
 
-Graph::Graph(){
-    this->_size = 0;
-}
+Graph::Graph() { this->_size = 0; }
 
 Graph::Graph(int cap) {
-    this->_size = 0;
-    this->_cap = cap;
-    this->_adj = new std::list<Edge*>[cap];
+  this->_size = 0;
+  this->_cap = cap;
+  this->_adj = new std::list<Edge *>[cap];
 }
 
 Graph::~Graph() { delete[] this->_adj; }
 
-void Graph::createGraph(int cap){
-    this->_size = 0;
-    this->_cap = cap;
-    this->_adj = new std::list<Edge*>[cap];
+void Graph::createGraph(int cap) {
+  this->_size = 0;
+  this->_cap = cap;
+  this->_adj = new std::list<Edge *>[cap];
 }
 
 void Graph::expand() {
-    int cap = this->_cap;
-    // std::list<Edge*> tmp[cap];
-    std::list<Edge*> *tmp = new std::list<Edge*>[cap];
+  int cap = this->_cap;
+  // std::list<Edge*> tmp[cap];
+  std::list<Edge *> *tmp = new std::list<Edge *>[cap];
 
-    // copy current vertices in temporary array
-    for (int i = 0; i < cap; i++) {
-        for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
-            tmp[i].push_back(*it);
-        }
+  // copy current vertices in temporary array
+  for (int i = 0; i < cap; i++) {
+    for (std::list<Edge *>::iterator it = this->_adj[i].begin();
+         it != this->_adj[i].end(); it++) {
+      tmp[i].push_back(*it);
     }
+  }
 
-    this->_cap *= 2;
-    this->_adj = new std::list<Edge*>[this->_cap];
+  this->_cap *= 2;
+  this->_adj = new std::list<Edge *>[this->_cap];
 
-    for (int i = 0; i < cap; i++) {
-        for (std::list<Edge*>::iterator it = tmp[i].begin(); it != tmp[i].end(); it++) {
-            this->_adj[i].push_back(*it);
-        }
+  for (int i = 0; i < cap; i++) {
+    for (std::list<Edge *>::iterator it = tmp[i].begin(); it != tmp[i].end();
+         it++) {
+      this->_adj[i].push_back(*it);
     }
+  }
 }
 
 void Graph::addVertex(std::string name) {
-    // add vertices (destinations)
-    if (this->_size + 1 >= this->_cap) // expand if number of vertices reached capacity
-        this->expand();
+  // add vertices (destinations)
+  if (this->_size + 1 >=
+      this->_cap) // expand if number of vertices reached capacity
+    this->expand();
 
-    Node *n = new Node(this->_size, name);
+  Node *n = new Node(this->_size, name);
 
-    // push to the list of vertex
-    this->_vertex.push_back(n);
-    this->_size += 1;
+  // push to the list of vertex
+  this->_vertex.push_back(n);
+  this->_size += 1;
 }
 
 void Graph::addEdge(int a, int b, int cost) {
-    // edge has the destination id and the cost
-    Edge *e = new Edge(b, cost);
-    this->_adj[a].push_back(e);
+  // edge has the destination id and the cost
+  Edge *e = new Edge(b, cost);
+  this->_adj[a].push_back(e);
 }
 
 void Graph::display() {
-    for (int i = 0; i < this->_size; i++) {
-        for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
-            Edge e = **it;
-            // i -> id of source vertex
-            std::cout << i << " -> " << e.n << " = " << e.cost << " ";
-        }
-        std::cout << "\n";
+  for (int i = 0; i < this->_size; i++) {
+    for (std::list<Edge *>::iterator it = this->_adj[i].begin();
+         it != this->_adj[i].end(); it++) {
+      Edge e = **it;
+      // i -> id of source vertex
+      std::cout << i << " -> " << e.n << " = " << e.cost << " ";
     }
+    std::cout << "\n";
+  }
 }
 
-void Graph::bfs(int s) {
-    (void)s;
-}
+void Graph::bfs(int s) { (void)s; }
 
-std::stack<Edge*> Graph::shortestPath(int s, int e) {
-    int size = this->_size;
-    int **costs; // matrix of the costs
-    int i = 0, j = 0;
+std::stack<Edge *> Graph::shortestPath(int s, int e) {
+  int size = this->_size;
+  int **costs; // matrix of the costs
+  int i = 0, j = 0;
 
-    // memory allocation
-    costs = new int*[size];
-    for (; i < size; i++) {
-        costs[i] = new int[size];
+  // memory allocation
+  costs = new int *[size];
+  for (; i < size; i++) {
+    costs[i] = new int[size];
 
-        for (; j < size; j++)
-            costs[i][j] = INT_MAX;
+    for (; j < size; j++)
+      costs[i][j] = INT_MAX;
+  }
+
+  int *dist = new int[size];
+  int *prev = new int[size];
+  bool *visit = new bool[size];
+
+  int min_dist = INT_MAX; // current minimum distation (big number)
+  int next = 0;
+
+  // fills the costs array by the cost of each edges
+  for (i = 0; i < size; i++) {
+    for (std::list<Edge *>::iterator it = this->_adj[i].begin();
+         it != this->_adj[i].end(); it++) {
+      Edge e = **it;
+
+      costs[i][e.n] = e.cost;
     }
+  }
 
-    int *dist = new int[size];
-    int *prev = new int[size];
-    bool *visit = new bool[size];
+  // fill the dist array
+  // dist keep track of the costs
+  for (i = 0; i < size; i++) {
+    dist[i] = costs[s][i];
+    prev[i] = s;
+    visit[i] = false;
+  }
 
-    int min_dist = INT_MAX; // current minimum distation (big number)
-    int next = 0;
+  dist[s] = 0;
+  visit[s] = true;
 
-    // fills the costs array by the cost of each edges
-    for (i = 0; i < size; i++) {
-        for (std::list<Edge*>::iterator it = this->_adj[i].begin(); it != this->_adj[i].end(); it++) {
-            Edge e = **it;
-
-            costs[i][e.n] = e.cost;
-        }
+  // start search on neighbor vertices
+  for (i = 0; i < size; i++) {
+    if (dist[i] < min_dist && !visit[i]) {
+      min_dist = dist[i];
+      next = i;
     }
+  }
 
-    // fill the dist array
-    // dist keep track of the costs
-    for (i = 0; i < size; i++) {
-        dist[i] = costs[s][i];
-        prev[i] = s;
-        visit[i] = false;
+  // next vertex to visit
+  visit[next] = true;
+
+  // continue looking for the path
+  for (i = 0; i < size; i++) {
+    if (min_dist + costs[next][i] < dist[i] && !visit[i]) {
+      dist[i] = min_dist + costs[next][i];
+      prev[i] = next;
     }
+  }
 
-    dist[s] = 0;
-    visit[s] = true;
+  // create stack for the path
+  j = e;
 
-    // start search on neighbor vertices
-    for (i = 0; i < size; i++) {
-        if (dist[i] < min_dist && !visit[i]) {
-            min_dist = dist[i];
-            next = i;
-        }
-    }
+  if (prev[j] == s)
+    throw 404;
 
-    // next vertex to visit
-    visit[next] = true;
+  std::stack<Edge *> output;
+  Edge *edge = new Edge(e, dist[e]);
+  output.push(edge);
 
-    // continue looking for the path
-    for (i = 0; i < size; i++) {
-        if (min_dist + costs[next][i] < dist[i] && !visit[i]) {
-            dist[i] = min_dist + costs[next][i];
-            prev[i] = next;
-        }
-    }
-
-    // create stack for the path
-    j = e;
-
-    if (prev[j] == s)
-        throw 404;
-
-    std::stack<Edge*> output;
-    Edge *edge = new Edge(e, dist[e]);
+  do {
+    j = prev[j];
+    edge = new Edge(j, dist[e]);
     output.push(edge);
+  } while (j != s);
 
-    do {
-        j = prev[j];
-        edge = new Edge(j, dist[e]);
-        output.push(edge);
-    } while (j != s);
+  // free memory
+  for (i = 0; i < size; i++)
+    delete[] costs[i];
+  delete[] costs;
+  delete[] dist;
+  delete[] prev;
+  delete[] visit;
 
-    // free memory
-    for (i = 0; i < size; i++)
-        delete[] costs[i];
-    delete[] costs;
-    delete[] dist;
-    delete[] prev;
-    delete[] visit;
-
-    return output;
+  return output;
 }
